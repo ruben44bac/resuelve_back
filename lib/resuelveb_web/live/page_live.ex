@@ -48,12 +48,20 @@ defmodule ResuelvebWeb.PageLive do
     {:noreply, assign(socket, new_level: new_level, edit: nil)}
   end
 
+  def handle_event("delete_level", %{"name" => name}, socket) do
+    level = socket.assigns.levels
+      |> Enum.find(fn l -> l.name == name end)
+    levels = socket.assigns.levels
+      |> List.delete(level)
+    {:noreply, assign(socket, levels: levels)}
+  end
+
   def handle_event("edit_level", %{"name" => name}, socket) do
     level = socket.assigns.levels
       |> Enum.find(fn l -> l.name == name end)
     new_level = socket.assigns.new_level
-    |> Map.put(:show, !socket.assigns.new_level.show)
-    |> Map.put(:form, init_form_level(level))
+      |> Map.put(:show, !socket.assigns.new_level.show)
+      |> Map.put(:form, init_form_level(level))
     {:noreply, assign(socket, new_level: new_level, edit: level)}
   end
 
@@ -89,16 +97,16 @@ defmodule ResuelvebWeb.PageLive do
 
   defp calculate(socket) do
     result = socket.assigns.form.json
-    |> LevelHandler.calculate(socket.assigns.levels)
+      |> LevelHandler.calculate(socket.assigns.levels)
     {:noreply, assign(socket, result: result)}
   end
 
   defp update?(form, socket) do
     levels = socket.assigns.levels
-    |> List.delete(socket.assigns.edit)
+      |> List.delete(socket.assigns.edit)
     levels
-    |> Enum.find(fn l -> l.name == form.name end)
-    |> exist_level?(form, levels, socket)
+      |> Enum.find(fn l -> l.name == form.name end)
+      |> exist_level?(form, levels, socket)
   end
 
   defp new?(form, socket) do

@@ -68,7 +68,7 @@ defmodule Resuelveb.LevelHandler do
     levels
     |> Enum.find(fn m -> m.name == name end)
     |> case do
-      nil -> 0
+      nil -> 10000
       val -> val.value
     end
   end
