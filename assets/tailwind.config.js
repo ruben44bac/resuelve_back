@@ -8,6 +8,7 @@ module.exports = {
         'xxl': '1500px'
       },
       colors: {
+        'p': '#1A2C4C',
         't': '#000000CF',
       },
       margin: {
