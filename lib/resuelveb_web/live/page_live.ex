@@ -13,6 +13,7 @@ defmodule ResuelvebWeb.PageLive do
     {:ok, assign(socket,
       form: init_form(),
       new_level: init_new_level(),
+      edit: nil,
       levels: LevelHandler.get_levels()
     )}
   end
@@ -20,7 +21,16 @@ defmodule ResuelvebWeb.PageLive do
   def handle_event("add_level", _params, socket) do
     new_level = socket.assigns.new_level
     |> Map.put(:show, !socket.assigns.new_level.show)
-    {:noreply, assign(socket, new_level: new_level)}
+    {:noreply, assign(socket, new_level: new_level, edit: nil)}
+  end
+
+  def handle_event("edit_level", %{"name" => name}, socket) do
+    level = socket.assigns.levels
+      |> Enum.find(fn l -> l.name == name end)
+    new_level = socket.assigns.new_level
+    |> Map.put(:show, !socket.assigns.new_level.show)
+    |> Map.put(:form, init_form_level(level))
+    {:noreply, assign(socket, new_level: new_level, edit: level)}
   end
 
   def handle_event("change_new_level", params, socket) do
@@ -47,25 +57,35 @@ defmodule ResuelvebWeb.PageLive do
       |> FormHandler.validate_all_form(true)
       |> case do
         false -> {:noreply, assign(socket, new_level: new_level)}
-        true -> socket.assigns.new_level.form |> new?(socket)
+        true -> if socket.assigns.edit != nil,
+          do: socket.assigns.new_level.form |> update?(socket),
+          else: socket.assigns.new_level.form |> new?(socket)
       end
+  end
+
+  defp update?(form, socket) do
+    levels = socket.assigns.levels
+    |> List.delete(socket.assigns.edit)
+    levels
+    |> Enum.find(fn l -> l.name == form.name end)
+    |> exist_level?(form, levels, socket)
   end
 
   defp new?(form, socket) do
     socket.assigns.levels
       |> Enum.find(fn l -> l.name == form.name end)
-      |> exist_level?(form, socket)
+      |> exist_level?(form, socket.assigns.levels, socket)
   end
 
-  defp exist_level?(nil, form, socket) do
+  defp exist_level?(nil, form, levels, socket) do
     form = form
       |> Map.put(:value, (form.value |> String.to_integer))
-    levels = socket.assigns.levels ++ [form]
+    levels = levels ++ [form]
     new_level = init_new_level()
     {:noreply, assign(socket, levels: levels, new_level: new_level)}
   end
 
-  defp exist_level?(_val, _form, socket) do
+  defp exist_level?(_val, _form, _levels, socket) do
     new_level = socket.assigns.new_level
       |> Map.put(:duplicate, true)
     {:noreply, assign(socket, new_level: new_level)}
@@ -94,6 +114,12 @@ defmodule ResuelvebWeb.PageLive do
     %{}
       |> Map.put(:name, "")
       |> Map.put(:value, "")
+  end
+
+  defp init_form_level(level) do
+    %{}
+      |> Map.put(:name, level.name)
+      |> Map.put(:value, level.value |> Integer.to_string)
   end
 
   defp init_form_level_validate() do

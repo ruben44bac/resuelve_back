@@ -21,7 +21,7 @@
         <label class="text-white font-medium text-sm block w-64 mt-6 text-center">El nivel <%= @new_level.form.name %> ya existe, ingresa otro nombre o edita el existente</label>
         <% else %>
         <div class="flex w-full mt-6">
-            <button class="px-4 py-2 rounded bg-pink-800 text-white mx-auto">Agregar</button>
+            <button class="px-4 py-2 rounded bg-pink-800 text-white mx-auto"><%= if @edit == nil, do: "Agregar", else: "Guardar modificación" %></button>
         </div>
         <% end %>
 
