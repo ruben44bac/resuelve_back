@@ -1,0 +1,35 @@
+<%= if @new_level.show do %>
+<div class="w-full h-screen top-0 left-0 fixed bg-t inline-flex items-center">
+    <form phx-change="change_new_level" phx-submit="submit_new_level" class="rounded mx-auto bg-p p-8">
+        <label class="block text-2xl text-center text-white">Nuevo nivel</label>
+        <div class="w-full mt-4 relative">
+            <label class="text-white font-medium text-sm block">Nombre del nivel</label>
+            <input name="name" value="<%= @new_level.form.name %>" class="px-2 py-1 rounded bg-gray-100 w-64">
+            <%= if !@new_level.form_valid?.name.valid? do %>
+                <label class="absolute bottom-0 left-0 -mb-5 text-red-700 text-sm font-medium"><%= @new_level.form_valid?.name.message %></label>
+            <% end %>
+        </div>
+
+        <div class="w-full mt-4 relative">
+            <label class="text-white font-medium text-sm block">Número de goles</label>
+            <input name="value" value="<%= @new_level.form.value %>" class="px-2 py-1 rounded bg-gray-100 w-64">
+            <%= if !@new_level.form_valid?.value.valid? do %>
+                <label class="absolute bottom-0 left-0 -mb-5 text-red-700 text-sm font-medium"><%= @new_level.form_valid?.value.message %></label>
+            <% end %>
+        </div>
+        <%= if @new_level.duplicate do %>
+        <label class="text-white font-medium text-sm block w-64 mt-6 text-center">El nivel <%= @new_level.form.name %> ya existe, ingresa otro nombre o edita el existente</label>
+        <% else %>
+        <div class="flex w-full mt-6">
+            <button class="px-4 py-2 rounded bg-pink-800 text-white mx-auto">Agregar</button>
+        </div>
+        <% end %>
+
+         <div class="flex w-full mt-2">
+            <button type="button" phx-click="add_level" class="px-4 py-2 underline text-white mx-auto">Cancelar</button>
+        </div>
+
+    </form>
+</div>
+
+<% end %>
