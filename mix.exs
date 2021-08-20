@@ -46,7 +46,10 @@ defmodule Resuelveb.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:plug, "~> 1.10.0"},
       {:poison, "~> 3.1"},
-      {:number, "~> 1.0"}
+      {:number, "~> 1.0"},
+      {:ex_doc, "~> 0.19"},
+      {:distillery, "~> 2.1"},
+      {:credo, "~> 1.4", only: [:dev, :test], runtime: false}
     ]
   end
 

@@ -49,7 +49,6 @@ defmodule Resuelveb.FormHandler do
   def validate_all_form([], valid), do: valid
 
   def validate(rule = %{required: [func | others], valid?: valid}, message, value) do
-    IO.inspect(func.func)
     new_valid = func.func.(value)
 
     rule =
