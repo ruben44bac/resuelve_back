@@ -42,7 +42,7 @@ defmodule Resuelveb.FormHandler do
     rules
   end
 
-  def validate_all_form([{atom, value} | others], valid) do
+  def validate_all_form([{_atom, value} | others], valid) do
     validate_all_form(others, value.valid? && valid)
   end
 
