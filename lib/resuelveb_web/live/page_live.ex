@@ -12,10 +12,20 @@ defmodule ResuelvebWeb.PageLive do
   def mount(_params, _session, socket) do
     {:ok, assign(socket,
       form: init_form(),
+      form_valid?: init_form_validate(),
       new_level: init_new_level(),
       edit: nil,
       levels: LevelHandler.get_levels()
     )}
+  end
+
+  def handle_event("change_json", params, socket) do
+    target = params["_target"] |> List.first()
+    update = params |> Map.get(target)
+    form_valid = socket.assigns.form_valid?
+      |> FormHandler.validate_form(target, update)
+    form = socket.assigns.form |> update_form(target, update)
+    {:noreply, assign(socket, form: form, form_valid?: form_valid)}
   end
 
   def handle_event("add_level", _params, socket) do
@@ -93,13 +103,17 @@ defmodule ResuelvebWeb.PageLive do
 
   defp init_form() do
     Map.new
-      |> Map.put(:error, init_error())
+      |> Map.put(:json, "")
   end
 
-  defp init_error() do
-    Map.new
-      |> Map.put(:status, false)
-      |> Map.put(:message, "")
+  defp init_form_validate() do
+    %{}
+      |> Map.put(:json, %{valid?: true,
+        required: [
+          %{func: &Resuelveb.FormHandler.json/1, message: "El Json es inválido"},
+          %{func: &Resuelveb.FormHandler.required/1, message: "El valor es requerido"}
+        ],
+        message: ""})
   end
 
   defp init_new_level() do

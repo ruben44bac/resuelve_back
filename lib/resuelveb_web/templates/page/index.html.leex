@@ -11,11 +11,11 @@
     <div class="inline-flex items-center w-full mt-16">
         <div class="mx-auto w-1/2 rounded bg-p p-4 shadow-lg">
             <div class="w-full flex">
-                <form class="w-1/2 p-4">
+                <form phx-change="change_json" class="w-1/2 p-4 relative">
                     <label class="block text-white">Ingresa el Json de tus jugadores</label>
-                    <textarea name="json" class="rounded bg-white h-56 mt-4 text-sm w-full p-2"></textarea>
-                    <%= if @form.error.status do %>
-                        <label class="block font-bold text-sm text-red-600"><%= @form.error.message %></label>
+                    <textarea name="json" value="<%= @form.json %>" class="rounded bg-white h-56 mt-4 text-sm w-full p-2"></textarea>
+                    <%= if !@form_valid?.json.valid? do %>
+                        <label class="absolute bottom-0 left-0 pl-4 text-red-700 text-sm font-medium"><%= @form_valid?.json.message %></label>
                     <% end %>
                 </form>
                 <div class="w-1/2 p-4">

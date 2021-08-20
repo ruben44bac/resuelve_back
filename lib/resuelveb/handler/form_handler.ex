@@ -6,7 +6,14 @@ defmodule Resuelveb.FormHandler do
 
   def only_number(value), do: value |> String.match?(~r/^[0-9]*$/)
 
-
+  def json(value) do
+    value
+    |> Poison.decode
+    |> case do
+      {:ok, _val} -> true
+      _ -> false
+    end
+  end
   def init_space(value),
     do:
       value
