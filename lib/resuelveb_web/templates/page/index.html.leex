@@ -11,12 +11,15 @@
     <div class="inline-flex items-center w-full mt-16">
         <div class="mx-auto w-1/2 rounded bg-p p-4 shadow-lg">
             <div class="w-full flex">
-                <form phx-change="change_json" class="w-1/2 p-4 relative">
+                <form phx-change="change_json" phx-submit="submit_json" class="w-1/2 p-4 relative">
                     <label class="block text-white">Ingresa el Json de tus jugadores</label>
                     <textarea name="json" value="<%= @form.json %>" class="rounded bg-white h-56 mt-4 text-sm w-full p-2"></textarea>
                     <%= if !@form_valid?.json.valid? do %>
                         <label class="absolute bottom-0 left-0 pl-4 text-red-700 text-sm font-medium"><%= @form_valid?.json.message %></label>
                     <% end %>
+                    <div class="flex w-full mt-4">
+                        <button class="w-full py-2 rounded bg-pink-800 text-white mx-auto">Calcular</button>
+                    </div>
                 </form>
                 <div class="w-1/2 p-4">
                     <label class="block text-white">Tabulador de niveles</label>
@@ -56,10 +59,14 @@
                     <div phx-click="add_level" class="flex w-full mt-4">
                         <button class="px-4 py-2 rounded bg-pink-800 text-white ml-auto">Agregar nivel</button>
                     </div>
+
+
                 </div>
             </div>
         </div>
     </div>
+
+    <%= render_sections "result.html", assigns %>
 
 </div>
 

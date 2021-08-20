@@ -1,0 +1,36 @@
+<%= if @result != nil do %>
+<div class="inline-flex items-center w-full mt-4">
+    <div class="mx-auto w-1/2 flex rounded bg-p p-4 shadow-lg">
+        <div class="w-1/3 px-3">
+            <label class="block text-white">Resultado en Json</label>
+            <div class="rounded bg-blue-900 text-white h-80 w-full text-sm overflow-y-scroll p-3 mt-4">
+                <pre phx-hook="pretty_json">
+                    <%= @result.json %>
+                </pre>
+            </div>
+        </div>
+        <div class="w-2/3 block px-3">
+            <label class="block text-white">Resultado por equipo</label>
+            <%= for team <- @result.team do %>
+                <div class="clearfix">
+                    <label class="block text-white text-3xl font-bold "><%= team |> List.first |> Map.get("equipo") %></label>
+                    <%= for player <- team do %>
+                        <div class="w-64 float-left text-white p-2">
+                            <div class="p-2 w-full rounded bg-blue-800">
+                                <label class="block text-xl font-medium"><%= player["nombre"] %></label>
+                                <label class="block text-base">Sueldo: <%= Number.Currency.number_to_currency("#{player["sueldo"]}") %></label>
+                                <label class="block text-base">Bono: <%= Number.Currency.number_to_currency("#{player["bono"]}") %></label>
+                                <label class="block text-base">Goles: <%= player["goles"] %></label>
+                                <label class="block text-base">Nivel: <%= player["nivel"] %></label>
+                                <label class="block text-base">Sueldo completo: <%= Number.Currency.number_to_currency("#{player["sueldo_completo"]}") %></label>
+                            </div>
+                        </div>
+                    <% end %>
+                </div>
+            <% end %>
+
+        </div>
+    </div>
+</div>
+
+<% end %>

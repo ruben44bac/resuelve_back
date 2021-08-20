@@ -15,7 +15,8 @@ defmodule ResuelvebWeb.PageLive do
       form_valid?: init_form_validate(),
       new_level: init_new_level(),
       edit: nil,
-      levels: LevelHandler.get_levels()
+      levels: LevelHandler.get_levels(),
+      result: nil
     )}
   end
 
@@ -26,6 +27,19 @@ defmodule ResuelvebWeb.PageLive do
       |> FormHandler.validate_form(target, update)
     form = socket.assigns.form |> update_form(target, update)
     {:noreply, assign(socket, form: form, form_valid?: form_valid)}
+  end
+
+  def handle_event("submit_json", params, socket) do
+    valid? = params
+      |> Map.to_list()
+      |> validate_all_form(socket.assigns.form_valid?)
+    valid?
+      |> Map.to_list()
+      |> FormHandler.validate_all_form(true)
+      |> case do
+        false -> {:noreply, assign(socket, form_valid?: valid?)}
+        true -> calculate(socket)
+      end
   end
 
   def handle_event("add_level", _params, socket) do
@@ -71,6 +85,12 @@ defmodule ResuelvebWeb.PageLive do
           do: socket.assigns.new_level.form |> update?(socket),
           else: socket.assigns.new_level.form |> new?(socket)
       end
+  end
+
+  defp calculate(socket) do
+    result = socket.assigns.form.json
+    |> LevelHandler.calculate(socket.assigns.levels)
+    {:noreply, assign(socket, result: result)}
   end
 
   defp update?(form, socket) do
