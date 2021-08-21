@@ -5,10 +5,12 @@ defmodule ResuelvebWeb.PageLive do
     FormHandler
   }
 
+  @spec render(any) :: any
   def render(assigns) do
     ResuelvebWeb.PageView.render("index.html", assigns)
   end
 
+  @spec mount(any, any, Phoenix.LiveView.Socket.t()) :: {:ok, any}
   def mount(_params, _session, socket) do
     {:ok, assign(socket,
       form: init_form(),
@@ -20,6 +22,7 @@ defmodule ResuelvebWeb.PageLive do
     )}
   end
 
+  @spec handle_event(<<_::64, _::_*8>>, any, Phoenix.LiveView.Socket.t()) :: {:noreply, any}
   def handle_event("change_json", params, socket) do
     target = params["_target"] |> List.first()
     update = params |> Map.get(target)

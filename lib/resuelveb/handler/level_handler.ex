@@ -1,5 +1,9 @@
 defmodule Resuelveb.LevelHandler do
 
+  @moduledoc """
+    This module contains functions related to the calculation of salaries and levels
+  """
+  @spec get_levels :: [%{name: <<_::8, _::_*32>>, value: 5 | 10 | 15 | 20}, ...]
   def get_levels() do
     [
       Map.new
@@ -17,6 +21,22 @@ defmodule Resuelveb.LevelHandler do
     ]
   end
 
+  @spec calculate(
+          binary
+          | maybe_improper_list(
+              binary | maybe_improper_list(any, binary | []) | byte,
+              binary | []
+            ),
+          any
+        ) :: %{
+          json:
+            binary
+            | maybe_improper_list(
+                binary | maybe_improper_list(any, binary | []) | byte,
+                binary | []
+              ),
+          team: list
+        }
   def calculate(data, levels) do
     data = data |> Poison.decode!
     team = data["jugadores"]
@@ -28,10 +48,17 @@ defmodule Resuelveb.LevelHandler do
     %{team: team, json: json}
   end
 
+  @spec build_json(any) ::
+          binary
+          | maybe_improper_list(
+              binary | maybe_improper_list(any, binary | []) | byte,
+              binary | []
+            )
   def build_json(json) do
     %{"jugadores" => json} |> Poison.encode!
   end
 
+  @spec reckoner([map], any) :: [map]
   def reckoner(arr, levels) do
     goal_total_team = arr
     |> get_goal_total_team
